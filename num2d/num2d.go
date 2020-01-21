@@ -49,6 +49,10 @@ func Transpose(m Mat) (Mat) {
     return res
 }
 
+func Size(m Mat) (int, int) {
+    return len(m), len(m[0])
+}
+
 ////////////////////////////////////////
 // sum api
 ////////////////////////////////////////
