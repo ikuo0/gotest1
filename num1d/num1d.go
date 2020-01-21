@@ -40,13 +40,13 @@ func Arange(a float64, b float64, count int) F64Arr {
 }
 
 func Rand(size int, randomType TypeRandom) F64Arr {
-	arr := Create(size)
-	fn := rand.Float64
-	if randomType == ConstRandomUniform {
-		fn = rand.Float64
-	} else if randomType == ConstRandomNormal {
-		fn = rand.NormFloat64
-	}
+    arr := Create(size)
+    fn := rand.Float64
+    if randomType == ConstRandomUniform {
+        fn = rand.Float64
+    } else if randomType == ConstRandomNormal {
+        fn = rand.NormFloat64
+    }
     for i := 0; i < size; i++ {
         arr[i] = fn()
     }
@@ -190,8 +190,8 @@ func (me* Option) Rand(size int) (F64Arr){
 }
 
 func Opt() (*Option) {
-	return &Option {
-		randomType: ConstRandomUniform,
-	}
+    return &Option {
+        randomType: ConstRandomUniform,
+    }
 }
 
