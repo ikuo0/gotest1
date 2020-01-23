@@ -55,17 +55,35 @@ func Rand(size int, randomType TypeRandom) F64Arr {
 
 type I64Arr []int
 
-func CreateInt(size int) I64Arr {
+func IntCreate(size int) I64Arr {
     arr := make(I64Arr, size)
     return arr
 }
 
+func IntFull(size int, n int) I64Arr {
+    arr := IntCreate(size)
+    for i := 0; i < len(arr); i++ {
+        arr[i] = n
+    }
+    return arr
+}
+
 func ToInt(arr F64Arr) []int {
-    res := CreateInt(int(len(arr)))
+    res := IntCreate(int(len(arr)))
     for i := 0; i < len(arr); i++ {
         res[i] = int(arr[i])
     }
     return res
+}
+
+func IntWhereEq(arr I64Arr, n int) I64Arr {
+    idxs := []int{}
+    for i := 0; i < len(arr); i++ {
+        if arr[i] == n {
+            idxs = append(idxs, i)
+        }
+    }
+    return idxs
 }
 
 ////////////////////////////////////////
@@ -151,6 +169,17 @@ func NNMulti(a F64Arr, b F64Arr) (bool, F64Arr) {
     res := Create(int(len(a)))
     for i := 0; i < len(a); i++ {
         res[i] = a[i] * b[i]
+    }
+    return true, res
+}
+
+func NNDivision(a F64Arr, b F64Arr) (bool, F64Arr) {
+    if len(a) != len(b) {
+        return false, nil
+    }
+    res := Create(int(len(a)))
+    for i := 0; i < len(a); i++ {
+        res[i] = a[i] / b[i]
     }
     return true, res
 }

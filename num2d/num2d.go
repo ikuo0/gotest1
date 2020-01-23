@@ -37,20 +37,33 @@ func Rand(r int, c int, randomType n1d.TypeRandom) (Mat) {
     return m
 }
 
+func Size(m Mat) (int, int) {
+    return len(m), len(m[0])
+}
+
+////////////////////////////////////////
+// formation
+////////////////////////////////////////
 func Transpose(m Mat) (Mat) {
-    rowSize := len(m)
-    colSize := len(m[0])
-    res := Create(colSize, rowSize)
-    for r := 0; r < rowSize; r++ {
-        for c := 0; c < colSize; c++ {
+    rSize, cSize := Size(m)
+    res := Create(cSize, rSize)
+    for r := 0; r < rSize; r++ {
+        for c := 0; c < cSize; c++ {
             res[c][r] = m[r][c]
         }
     }
     return res
 }
 
-func Size(m Mat) (int, int) {
-    return len(m), len(m[0])
+func SelectColumn(m Mat, columns []int) (Mat) {
+    rSize, _ := Size(m)
+    res := Create(rSize, len(columns))
+    for r := 0; r < rSize; r++ {
+        for dstCol, srcCol := range(columns) {
+            res[r][dstCol] = m[r][srcCol]
+        }
+    }
+    return res
 }
 
 ////////////////////////////////////////
@@ -75,7 +88,7 @@ func Mean(m Mat, axis TypeAxis) (n1d.F64Arr) {
     rowSize := len(m)
     colSize := len(m[0])
     res := Total(m, axis)
-    if axis == 0 {
+    if axis == ConstAxisRow {
         return n1d.N1Division(res, float64(rowSize))
     } else {
         return n1d.N1Division(res, float64(colSize))

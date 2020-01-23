@@ -9,7 +9,7 @@ import (
     "regexp"
     "strconv"
     "strings"
-    //n1d "github.com/ikuo0/gotest1/num1d"
+    n1d "github.com/ikuo0/gotest1/num1d"
     n2d "github.com/ikuo0/gotest1/num2d"
 )
 
@@ -71,4 +71,20 @@ func LoadTxt(fileName string) (bool, n2d.Mat){
             }
         }
     }
+}
+
+func StandardScalerFit(m n2d.Mat) (n1d.F64Arr, n1d.F64Arr) {
+    mean := n2d.Opt().Axis(n2d.ConstAxisRow).Mean(m)
+    std := n2d.Opt().Axis(n2d.ConstAxisRow).Std(m)
+    return mean, std
+}
+
+func StandardScalerTransform(mean n1d.F64Arr, std n1d.F64Arr, m n2d.Mat) (n2d.Mat) {
+    rSize, cSize := n2d.Size(m)
+    res := n2d.Create(rSize, cSize)
+    for r := 0; r < rSize; r++ {
+        _, dif := n1d.NNSubtract(m[r], mean)
+        _, res[r] = n1d.NNDivision(dif, std)
+    }
+    return res
 }
