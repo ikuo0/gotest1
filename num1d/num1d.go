@@ -60,6 +60,14 @@ func IntCreate(size int) I64Arr {
     return arr
 }
 
+func IntZeros(size int) I64Arr {
+    arr := make(I64Arr, size)
+    for i := 0; i < size; i++ {
+        arr[i] = 0
+    }
+    return arr
+}
+
 func IntFull(size int, n int) I64Arr {
     arr := IntCreate(size)
     for i := 0; i < len(arr); i++ {
@@ -67,6 +75,30 @@ func IntFull(size int, n int) I64Arr {
     }
     return arr
 }
+
+func IntArange(a int, b int, step int) I64Arr {
+    c := b - a
+    count := c / step
+    if (c % step) != 0 {
+        count += 1
+    }
+    arr := IntCreate(int(count))
+    for i := a; i < b; i += step {
+        arr[i] = i
+    }
+    return arr
+}
+
+func IntShuffle(arr I64Arr) I64Arr {
+    size := len(arr)
+    for i := size - 1; i >= 0; i-- {
+        j := rand.Intn(i + 1)
+        arr[i], arr[j] = arr[j], arr[i]
+    }
+    return arr
+}
+
+
 
 func ToInt(arr F64Arr) []int {
     res := IntCreate(int(len(arr)))
@@ -205,6 +237,25 @@ func SumNorm(arr F64Arr) float64 {
 }
 
 
+////////////////////////////////////////
+// operaiton...etc
+////////////////////////////////////////
+func ArgMin(arr F64Arr) (int) {
+    min := math.MaxFloat64
+    res := int(0)
+    for idx, v := range(arr) {
+        if v < min {
+            min = v
+            res = idx
+        }
+    }
+    return res
+}
+
+
+////////////////////////////////////////
+// Option instance
+////////////////////////////////////////
 type Option struct {
     randomType TypeRandom
 }

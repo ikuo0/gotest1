@@ -29,6 +29,14 @@ func Create(r int, c int) (Mat) {
     return Mat(res)
 }
 
+func Zeros(r int, c int) (Mat) {
+    res := make([]n1d.F64Arr, r)
+    for i := 0; i < r; i++ {
+        res[i] = n1d.Zeros(c)
+    }
+    return Mat(res)
+}
+
 func Rand(r int, c int, randomType n1d.TypeRandom) (Mat) {
     m := Create(r, c)
     for i := 0; i < r; i++ {
@@ -62,6 +70,15 @@ func SelectColumn(m Mat, columns []int) (Mat) {
         for dstCol, srcCol := range(columns) {
             res[r][dstCol] = m[r][srcCol]
         }
+    }
+    return res
+}
+
+func Indexing(m Mat, idxs n1d.I64Arr) (Mat) {
+    _, cSize := Size(m)
+    res := Create(len(idxs), cSize)
+    for i, idx := range(idxs) {
+        res[i] = m[idx]
     }
     return res
 }
@@ -115,6 +132,7 @@ func Std(m Mat, axis TypeAxis) (n1d.F64Arr) {
     return res
 }
 
+
 ////////////////////////////////////////
 // Option instance
 ////////////////////////////////////////
@@ -141,6 +159,10 @@ func (me *Option) RandomType(n n1d.TypeRandom) (*Option) {
 ////////////////////////////////////////
 func (me *Option) Rand(r int, c int) (Mat) {
     return Rand(r, c, me.randomType)
+}
+
+func (me *Option) Total(m Mat) (n1d.F64Arr) {
+    return Total(m, me.axisType)
 }
 
 func (me *Option) Mean(m Mat) (n1d.F64Arr) {
