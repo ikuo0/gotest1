@@ -53,8 +53,14 @@ func Rand(size int, randomType TypeRandom) F64Arr {
     return arr
 }
 
+////////////////////////////////////////
+// Int
+////////////////////////////////////////
 type I64Arr []int
 
+////////////////////////////////////////
+// Int Create
+////////////////////////////////////////
 func IntCreate(size int) I64Arr {
     arr := make(I64Arr, size)
     return arr
@@ -99,7 +105,9 @@ func IntShuffle(arr I64Arr) I64Arr {
 }
 
 
-
+////////////////////////////////////////
+// Int etc
+////////////////////////////////////////
 func ToInt(arr F64Arr) []int {
     res := IntCreate(int(len(arr)))
     for i := 0; i < len(arr); i++ {
@@ -246,6 +254,18 @@ func ArgMin(arr F64Arr) (int) {
     for idx, v := range(arr) {
         if v < min {
             min = v
+            res = idx
+        }
+    }
+    return res
+}
+
+func ArgMax(arr F64Arr) (int) {
+    max := math.SmallestNonzeroFloat64
+    res := int(0)
+    for idx, v := range(arr) {
+        if v > max {
+            max = v
             res = idx
         }
     }

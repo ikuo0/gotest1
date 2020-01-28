@@ -56,19 +56,22 @@ func TestKmeans(t* testing.T) {
 		m = numlib.StandardScalerTransform(mean, std, m)
 		_, means := InitKmeansPlusPlus(nClusters, m)
 		tol := 1e-5
+		var probability n2d.Mat = nil
 		for iter := 0; iter < 100; iter++ {
-			boolIndex := Estep(nClusters, means, m)
+			probability = Estep(nClusters, means, m)
 			//fmt.Println(boolIndex)
-			newMeans := Mstep(nClusters, boolIndex, m)
+			newMeans := Mstep(nClusters, probability, m)
 			//fmt.Println(newMeans)
 			shiftTotal := MeansShiftTotal(nClusters, means, newMeans)
-			fmt.Println("shiftTotal", shiftTotal)
+			fmt.Println("iter", iter, "shiftTotal", shiftTotal)
 			means = newMeans
 
-			if shiftTotal < tol{
+			if shiftTotal < tol {
 				fmt.Println("converged")
 				break
 			}
 		}
+		predicts := n2d.Opt().Axis(n2d.ConstAxisCol).ArgMax(probability)
+		fmt.Println(predicts)
 	}
 }

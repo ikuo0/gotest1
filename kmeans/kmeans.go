@@ -72,24 +72,24 @@ func Estep(n_clusters int, means n2d.Mat, x n2d.Mat) (n2d.Mat) {
 			norms[r][cluster] = n1d.SumNorm(dif)
 		}
 	}
-	boolIndex := n2d.Zeros(n_clusters, length)
+	probability := n2d.Zeros(n_clusters, length)
 	for r := 0; r < length; r++ {
 		cluster := n1d.ArgMin(norms[r])
-		boolIndex[cluster][r] = 1
+		probability[cluster][r] = 1.0
 	}
-	return boolIndex
+	return probability
 }
 
-func Mstep(n_clusters int, boolIndex n2d.Mat, x n2d.Mat) (n2d.Mat) {
+func Mstep(n_clusters int, probability n2d.Mat, x n2d.Mat) (n2d.Mat) {
 	rSize, cSize := n2d.Size(x)
 	newMeans := n2d.Create(n_clusters, cSize)
 	for cluster := 0; cluster < n_clusters; cluster += 1 {
 		sum := n1d.Zeros(cSize)
 		for r := 0; r < rSize; r += 1 {
-			ix := n1d.N1Multiple(x[r], float64(boolIndex[cluster][r]))
+			ix := n1d.N1Multiple(x[r], float64(probability[cluster][r]))
 			_, sum = n1d.NNPlus(sum, ix)
 		}
-		subTotal := n1d.SumTotal(boolIndex[cluster])
+		subTotal := n1d.SumTotal(probability[cluster])
 		newMeans[cluster] = n1d.N1Division(sum, subTotal)
 	}
 	return newMeans

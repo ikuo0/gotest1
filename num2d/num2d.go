@@ -2,7 +2,9 @@
 package num2d
 
 import (
+    //"fmt"
     "math"
+    //"os"
     n1d "github.com/ikuo0/gotest1/num1d"
 )
 //type F64Arr []float64
@@ -48,6 +50,21 @@ func Rand(r int, c int, randomType n1d.TypeRandom) (Mat) {
 
 func Size(m Mat) (int, int) {
     return len(m), len(m[0])
+}
+
+////////////////////////////////////////
+// etc
+////////////////////////////////////////
+func ArgMax(m Mat, axis TypeAxis) (n1d.I64Arr) {
+    if axis != ConstAxisRow {
+        m = Transpose(m)
+    }
+    rSize, _ := Size(m)
+    res := n1d.IntZeros(rSize)
+    for r := 0; r < rSize; r++ {
+        res[r] = n1d.ArgMax(m[r])
+    }
+    return res
 }
 
 ////////////////////////////////////////
@@ -208,6 +225,10 @@ func (me *Option) Mean(m Mat) (n1d.F64Arr) {
 
 func (me *Option) Std(m Mat) (n1d.F64Arr) {
     return Std(m, me.axisType)
+}
+
+func (me *Option) ArgMax(m Mat) (n1d.I64Arr) {
+    return ArgMax(m, me.axisType)
 }
 
 
