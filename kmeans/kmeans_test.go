@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
-	"os"
+	//"os"
 	"time"
 	//n1d "github.com/ikuo0/gotest1/num1d"
 	n2d "github.com/ikuo0/gotest1/num2d"
@@ -55,13 +55,20 @@ func TestKmeans(t* testing.T) {
 		mean, std := numlib.StandardScalerFit(m)
 		m = numlib.StandardScalerTransform(mean, std, m)
 		_, means := InitKmeansPlusPlus(nClusters, m)
+		tol := 1e-5
 		for iter := 0; iter < 100; iter++ {
 			boolIndex := Estep(nClusters, means, m)
-			fmt.Println(boolIndex)
+			//fmt.Println(boolIndex)
 			newMeans := Mstep(nClusters, boolIndex, m)
-			fmt.Println(newMeans)
-			os.Exit(9)
-			//tol := Tolerance(means, newMeans)
+			//fmt.Println(newMeans)
+			shiftTotal := MeansShiftTotal(nClusters, means, newMeans)
+			fmt.Println("shiftTotal", shiftTotal)
+			means = newMeans
+
+			if shiftTotal < tol{
+				fmt.Println("converged")
+				break
+			}
 		}
 	}
 }

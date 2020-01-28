@@ -2,6 +2,7 @@
 package num2d
 
 import (
+    "math"
     n1d "github.com/ikuo0/gotest1/num1d"
 )
 //type F64Arr []float64
@@ -83,6 +84,32 @@ func Indexing(m Mat, idxs n1d.I64Arr) (Mat) {
     return res
 }
 
+
+
+////////////////////////////////////////
+// N x M calc
+////////////////////////////////////////
+func EqualyCheck(a Mat, b Mat) (bool) {
+    rSizeA, cSizeA := Size(a)
+    rSizeB, cSizeB := Size(b)
+    return rSizeA == rSizeB && cSizeA == cSizeB
+}
+func NMSubtract(a Mat, b Mat) (bool, Mat) {
+
+    if EqualyCheck(a, b) == false {
+        return false, nil
+    } else {
+        rSize, cSize := Size(a)
+        m := Create(rSize, cSize)
+        for r := 0; r < rSize; r++ {
+            for c := 0; c < cSize; c++ {
+                m[r][c] = a[r][c] - b[r][c]
+            }
+        }
+        return true, m
+    }
+}
+
 ////////////////////////////////////////
 // sum api
 ////////////////////////////////////////
@@ -132,6 +159,16 @@ func Std(m Mat, axis TypeAxis) (n1d.F64Arr) {
     return res
 }
 
+func SquaredNorm(x Mat) (float64) {
+    rSize, cSize := Size(x)
+    var total float64 = 0
+    for r := 0; r < rSize; r++ {
+        for c := 0; c < cSize; c++ {
+            total += math.Pow(x[r][c], 2)
+        }
+    }
+    return total
+}
 
 ////////////////////////////////////////
 // Option instance

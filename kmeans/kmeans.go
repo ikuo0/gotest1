@@ -95,3 +95,8 @@ func Mstep(n_clusters int, boolIndex n2d.Mat, x n2d.Mat) (n2d.Mat) {
 	return newMeans
 }
 
+func MeansShiftTotal(n_clusters int, a n2d.Mat, b n2d.Mat) (float64) {
+	//center_shift_total = squared_norm(centers_old - centers)
+	_, sub := n2d.NMSubtract(a, b)
+	return n2d.SquaredNorm(sub)
+}
