@@ -101,6 +101,16 @@ func Indexing(m Mat, idxs n1d.I64Arr) (Mat) {
     return res
 }
 
+func Flatten(m Mat) (n1d.F64Arr) {
+    rSize, cSize := Size(m)
+    res := n1d.Create(rSize * cSize)
+    for r := 0; r < rSize; r++ {
+        for c := 0; c < cSize; c++ {
+            res[r * cSize + c] = m[r][c]
+        }
+    }
+    return res
+}
 
 
 ////////////////////////////////////////

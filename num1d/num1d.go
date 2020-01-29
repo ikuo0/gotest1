@@ -272,6 +272,11 @@ func ArgMax(arr F64Arr) (int) {
     return res
 }
 
+func Max(arr F64Arr) (float64) {
+    idx := ArgMax(arr)
+    return arr[idx]
+}
+
 
 ////////////////////////////////////////
 // Option instance

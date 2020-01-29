@@ -8,7 +8,7 @@ import (
 	"math/rand"
 	//"os"
 	"time"
-	//n1d "github.com/ikuo0/gotest1/num1d"
+	n1d "github.com/ikuo0/gotest1/num1d"
 	n2d "github.com/ikuo0/gotest1/num2d"
 	"github.com/ikuo0/gotest1/numlib"
 )
@@ -51,27 +51,36 @@ func TestKmeans(t* testing.T) {
 	if ok, m := numlib.LoadTxt("./iris.txt"); ok != true {
 		log.Fatal("load iris error")
 	} else {
-		m = n2d.SelectColumn(m, []int{0, 1, 2, 3})
-		mean, std := numlib.StandardScalerFit(m)
-		m = numlib.StandardScalerTransform(mean, std, m)
-		_, means := InitKmeansPlusPlus(nClusters, m)
+		x := n2d.SelectColumn(m, []int{0, 1, 2, 3})
+		y1 := n2d.SelectColumn(m, []int{4})
+		y2 := n2d.Flatten(y1)
+		y := n1d.ToInt(y2)
+		mean, std := numlib.StandardScalerFit(x)
+		x = numlib.StandardScalerTransform(mean, std, x)
+		_, means := InitKmeansPlusPlus(nClusters, x)
 		tol := 1e-5
 		var probability n2d.Mat = nil
 		for iter := 0; iter < 100; iter++ {
-			probability = Estep(nClusters, means, m)
-			//fmt.Println(boolIndex)
-			newMeans := Mstep(nClusters, probability, m)
-			//fmt.Println(newMeans)
+			probability = Estep(nClusters, means, x)
+			newMeans := Mstep(nClusters, probability, x)
 			shiftTotal := MeansShiftTotal(nClusters, means, newMeans)
 			fmt.Println("iter", iter, "shiftTotal", shiftTotal)
 			means = newMeans
-
 			if shiftTotal < tol {
-				fmt.Println("converged")
+				fmt.Println("converged", shiftTotal , "<", tol)
 				break
 			}
 		}
-		predicts := n2d.Opt().Axis(n2d.ConstAxisCol).ArgMax(probability)
+		accuracy := n1d.Create(nClusters)
+		for cluster := 0; cluster < nClusters; cluster += 1 {
+			idxs := n1d.IntWhereEq(y, cluster)
+			m1 := n2d.Indexing(probability, idxs)
+			sum := n2d.Opt().Axis(n2d.ConstAxisRow).Total(m1)
+			max := n1d.Max(sum)
+			accuracy[cluster] = max / float64(len(idxs))
+		}
+		predicts := n2d.Opt().Axis(n2d.ConstAxisRow).ArgMax(probability)
 		fmt.Println(predicts)
+		fmt.Println(accuracy)
 	}
 }
