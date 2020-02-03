@@ -23,7 +23,7 @@ func TestInitRandom(t* testing.T) {
 		m = numlib.StandardScalerTransform(mean, std, m)
 		fmt.Println("Init Random")
 		for i := 0; i < 1000; i++ {
-			idxs, _ := InitKmeansRandom(3, m)
+			idxs, _ := InitRandom(3, m)
 			fmt.Println(idxs)
 		}
 	}
@@ -57,11 +57,13 @@ func TestKmeans(t* testing.T) {
 		y := n1d.ToInt(y2)
 		mean, std := numlib.StandardScalerFit(x)
 		x = numlib.StandardScalerTransform(mean, std, x)
-		_, means := InitKmeansPlusPlus(nClusters, x)
+		//_, means := InitKmeansPlusPlus(nClusters, x)
+		_, means := InitImprovisation(nClusters, x)
+		//fmt.Println(means)
 		tol := 1e-5
 		var probability n2d.Mat = nil
 		for iter := 0; iter < 100; iter++ {
-			probability = Estep(nClusters, means, x)
+			probability, _ = Estep(nClusters, means, x)
 			newMeans := Mstep(nClusters, probability, x)
 			shiftTotal := MeansShiftTotal(nClusters, means, newMeans)
 			fmt.Println("iter", iter, "shiftTotal", shiftTotal)
@@ -82,5 +84,6 @@ func TestKmeans(t* testing.T) {
 		predicts := n2d.Opt().Axis(n2d.ConstAxisRow).ArgMax(probability)
 		fmt.Println(predicts)
 		fmt.Println(accuracy)
+		fmt.Println(n1d.SumMean(accuracy))
 	}
 }
