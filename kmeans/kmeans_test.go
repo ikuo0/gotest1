@@ -62,8 +62,8 @@ func TestKmeans(t* testing.T) {
 		randomIndexes := n2d.ShuffleIndex(x)
 		x = n2d.Indexing(x, randomIndexes)
 		y = n1d.IntIndexing(y, randomIndexes)
-		_, means := InitKmeansPlusPlus(nClusters, x)
-		//_, means := InitImprovisation(nClusters, x)
+		//_, means := InitKmeansPlusPlus(nClusters, x)
+		_, means := InitImprovisation(nClusters, x)
 		//fmt.Println(means)
 		tol := 1e-5
 		var probability n2d.Mat = nil
