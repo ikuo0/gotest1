@@ -46,7 +46,6 @@ func InitKmeansPlusPlus(n_clusters int, m n2d.Mat) (n1d.I64Arr, n2d.Mat) {
 				probability += distances[r] / denom
 				probabilities[r] = probability
 			}
-			//fmt.Println(probabilities)
 			for {
 				pos := rand.Float64() * probabilities[len(probabilities) - 1]
 				for r := rSize - 1; r >= 0; r-- {
@@ -60,8 +59,6 @@ func InitKmeansPlusPlus(n_clusters int, m n2d.Mat) (n1d.I64Arr, n2d.Mat) {
 					break
 				}
 			}
-			//fmt.Println("pos", pos)
-			//fmt.Println("centerIdx", centerIdx)
 		}
 		meanIdxs[cluster] = centerIdx
 	}
@@ -79,7 +76,6 @@ func Predict(n_clusters int, means n2d.Mat, x n1d.F64Arr) (int, float64) {
 }
 
 func InitImprovisation(n_clusters int, x n2d.Mat) (n1d.I64Arr, n2d.Mat) {
-	//n_clusters = n_clusters + 1
 	rSize, cSize := n2d.Size(x)
 	means := n2d.Zeros(n_clusters, cSize)
 	idxs := n1d.IntZeros(n_clusters)
@@ -105,46 +101,35 @@ func InitImprovisation(n_clusters int, x n2d.Mat) (n1d.I64Arr, n2d.Mat) {
 	}
 	minDistance := math.SmallestNonzeroFloat64
 	minIdx1, minIdx2 := 0, 0
-	for cnt := 0; cnt < 2; cnt ++ {
-		for r := 0; r < rSize; r++ {
-			ix := x[r]
-			_, distance := Predict(n_clusters, means, ix)
-			if distance > minDistance {
-				norm1 := DifNorm(ix, means[minIdx1])
-				norm2 := DifNorm(ix, means[minIdx2])
-				if norm1 < norm2 {
-					means[minIdx1] = ix
-					idxs[minIdx1] = r
-				} else {
-					means[minIdx2] = ix
-					idxs[minIdx2] = r
-				}
-				minDistance, minIdx1, minIdx2 = calcMinClusterDistance(means)
+	for r := 0; r < rSize; r++ {
+		ix := x[r]
+		_, distance := Predict(n_clusters, means, ix)
+		if distance > minDistance {
+			norm1 := DifNorm(ix, means[minIdx1])
+			norm2 := DifNorm(ix, means[minIdx2])
+			if norm1 < norm2 {
+				means[minIdx1] = ix
+				idxs[minIdx1] = r
 			} else {
-				//means[predict] = ix
-				//idxs[predict] = r
+				means[minIdx2] = ix
+				idxs[minIdx2] = r
 			}
+			minDistance, minIdx1, minIdx2 = calcMinClusterDistance(means)
+		} else {
+			// pass
 		}
 	}
-	//fmt.Println(means)
-	//os.Exit(9)
-	//return idxs[1:], means[1:]
 	return idxs, means
 }
 
 func Estep(n_clusters int, means n2d.Mat, x n2d.Mat) (n2d.Mat, n1d.F64Arr) {
 	length, _ := n2d.Size(x)
-	//norms := n2d.Create(length, n_clusters)
 	predicts := n1d.IntZeros(length)
 	distances := n1d.Zeros(length)
 	for r := 0; r < length; r++ {
 		predict, distance := Predict(n_clusters, means, x[r])
 		predicts[r] = predict
 		distances[r] = distance
-		//for cluster := 0; cluster < n_clusters; cluster += 1 {
-		//	_, dif := n1d.NNSubtract(x[r], means[cluster])
-		//	norms[r][cluster] = n1d.SumNorm(dif)
-		//}
 	}
 	probability := n2d.Zeros(length, n_clusters)
 	for i, pred := range(predicts) {
@@ -169,7 +154,6 @@ func Mstep(n_clusters int, probability n2d.Mat, x n2d.Mat) (n2d.Mat) {
 }
 
 func MeansShiftTotal(n_clusters int, a n2d.Mat, b n2d.Mat) (float64) {
-	//center_shift_total = squared_norm(centers_old - centers)
 	_, sub := n2d.NMSubtract(a, b)
 	return n2d.SquaredNorm(sub)
 }
