@@ -4,6 +4,7 @@ package num2d
 import (
     //"fmt"
     "math"
+    "math/rand"
     //"os"
     n1d "github.com/ikuo0/gotest1/num1d"
 )
@@ -112,6 +113,29 @@ func Flatten(m Mat) (n1d.F64Arr) {
     return res
 }
 
+
+////////////////////////////////////////
+// sort
+////////////////////////////////////////
+func ShuffleIndex(m Mat) n1d.I64Arr {
+    rSize, _ := Size(m)
+    idxs := n1d.IntArange(0, rSize, 1)
+    for i := rSize - 1; i >= 0; i-- {
+        j := rand.Intn(i + 1)
+        idxs[i], idxs[j] = idxs[j], idxs[i]
+    }
+    return idxs
+}
+
+func Shuffle(m Mat) Mat {
+    rSize, cSize := Size(m)
+    res := Create(rSize, cSize)
+    idxs := ShuffleIndex(m)
+    for i, idx := range(idxs) {
+        res[i] = m[idx]
+    }
+    return res
+}
 
 ////////////////////////////////////////
 // N x M calc

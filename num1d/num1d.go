@@ -95,6 +95,15 @@ func IntArange(a int, b int, step int) I64Arr {
     return arr
 }
 
+func IntIndexing(x, idxs I64Arr) (I64Arr) {
+    length := len(x)
+    res := IntCreate(length)
+    for i, idx := range(idxs) {
+        res[i] = x[idx]
+    }
+    return res
+}
+
 func IntShuffle(arr I64Arr) I64Arr {
     size := len(arr)
     for i := size - 1; i >= 0; i-- {

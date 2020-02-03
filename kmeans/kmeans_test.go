@@ -57,8 +57,13 @@ func TestKmeans(t* testing.T) {
 		y := n1d.ToInt(y2)
 		mean, std := numlib.StandardScalerFit(x)
 		x = numlib.StandardScalerTransform(mean, std, x)
-		//_, means := InitKmeansPlusPlus(nClusters, x)
-		_, means := InitImprovisation(nClusters, x)
+
+		// shuffle
+		randomIndexes := n2d.ShuffleIndex(x)
+		x = n2d.Indexing(x, randomIndexes)
+		y = n1d.IntIndexing(y, randomIndexes)
+		_, means := InitKmeansPlusPlus(nClusters, x)
+		//_, means := InitImprovisation(nClusters, x)
 		//fmt.Println(means)
 		tol := 1e-5
 		var probability n2d.Mat = nil

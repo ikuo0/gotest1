@@ -101,22 +101,24 @@ func InitImprovisation(n_clusters int, x n2d.Mat) (n1d.I64Arr, n2d.Mat) {
 	}
 	minDistance := math.SmallestNonzeroFloat64
 	minIdx1, minIdx2 := 0, 0
-	for r := 0; r < rSize; r++ {
-		ix := x[r]
-		_, distance := Predict(n_clusters, means, ix)
-		if distance > minDistance {
-			norm1 := DifNorm(ix, means[minIdx1])
-			norm2 := DifNorm(ix, means[minIdx2])
-			if norm1 < norm2 {
-				means[minIdx1] = ix
-				idxs[minIdx1] = r
+	for cnt := 0; cnt < 1; cnt ++ {
+		for r := 0; r < rSize; r++ {
+			ix := x[r]
+			_, distance := Predict(n_clusters, means, ix)
+			if distance > minDistance {
+				norm1 := DifNorm(ix, means[minIdx1])
+				norm2 := DifNorm(ix, means[minIdx2])
+				if norm1 < norm2 {
+					means[minIdx1] = ix
+					idxs[minIdx1] = r
+				} else {
+					means[minIdx2] = ix
+					idxs[minIdx2] = r
+				}
+				minDistance, minIdx1, minIdx2 = calcMinClusterDistance(means)
 			} else {
-				means[minIdx2] = ix
-				idxs[minIdx2] = r
+				// pass
 			}
-			minDistance, minIdx1, minIdx2 = calcMinClusterDistance(means)
-		} else {
-			// pass
 		}
 	}
 	return idxs, means
